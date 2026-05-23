@@ -8,7 +8,83 @@ BOT_TOKEN = "8796188861:AAGlWJFSSSG9mtUwPdzRan2aj5rHmmEBNR4"
 CHAT_ID = "834122182"
 
 # ============================================
-# DATABASE SETUP
+# TRUSTED SOURCES
+# ============================================
+
+trusted_sources = {
+    "openai.com": 9.7,
+    "anthropic.com": 9.5,
+    "deepmind.google": 9.6,
+    "techcrunch.com": 8.9,
+    "huggingface.co": 9.0,
+    "github.com": 8.8,
+    "theverge.com": 8.2,
+    "arstechnica.com": 9.1,
+    "reuters.com": 9.8,
+    "wired.com": 8.7,
+    "marktechpost.com": 7.8,
+    "reddit.com": 5.5
+}
+
+
+# ============================================
+# HYPE WORDS
+# ============================================
+
+hype_words = [
+    "destroy",
+    "shocking",
+    "secret",
+    "leak",
+    "human extinction",
+    "kills all jobs",
+    "world ending",
+    "agi achieved"
+]
+
+
+# ============================================
+# CATEGORY KEYWORDS
+# ============================================
+
+categories = {
+    "AI Models": [
+        "gpt",
+        "llm",
+        "model",
+        "claude",
+        "gemini"
+    ],
+
+    "Cybersecurity": [
+        "hack",
+        "breach",
+        "malware",
+        "cybersecurity"
+    ],
+
+    "Robotics": [
+        "robot",
+        "humanoid",
+        "automation"
+    ],
+
+    "Quantum Computing": [
+        "quantum",
+        "qubit"
+    ],
+
+    "Semiconductors": [
+        "gpu",
+        "nvidia",
+        "chip",
+        "semiconductor"
+    ]
+}
+
+
+# ============================================
+# DATABASE
 # ============================================
 
 conn = sqlite3.connect('news.db')
@@ -24,7 +100,7 @@ conn.commit()
 
 
 # ============================================
-# CLEAN HTML FUNCTION
+# CLEAN HTML
 # ============================================
 
 def clean_html(raw_html):
@@ -39,7 +115,7 @@ def clean_html(raw_html):
 
 
 # ============================================
-# TELEGRAM SEND FUNCTION
+# TELEGRAM SEND
 # ============================================
 
 def send_telegram(message):
@@ -53,12 +129,81 @@ def send_telegram(message):
 
     response = requests.post(url, data=data)
 
-    print("\nTelegram Response:")
     print(response.text)
 
 
 # ============================================
-# LOAD RSS FEEDS
+# DETECT CATEGORY
+# ============================================
+
+def detect_category(text):
+
+    text = text.lower()
+
+    for category, words in categories.items():
+
+        for word in words:
+
+            if word in text:
+
+                return category
+
+    return "General Technology"
+
+
+# ============================================
+# HYPE DETECTION
+# ============================================
+
+def detect_hype(text):
+
+    text = text.lower()
+
+    for word in hype_words:
+
+        if word in text:
+
+            return "HIGH"
+
+    return "LOW"
+
+
+# ============================================
+# SOURCE SCORE
+# ============================================
+
+def get_source_score(link):
+
+    for domain, score in trusted_sources.items():
+
+        if domain in link:
+
+            return score
+
+    return 4.0
+
+
+# ============================================
+# VERIFICATION STATUS
+# ============================================
+
+def get_verification(score):
+
+    if score >= 9:
+
+        return "Official / Highly Trusted"
+
+    elif score >= 7:
+
+        return "Trusted Tech Source"
+
+    else:
+
+        return "Limited Verification"
+
+
+# ============================================
+# LOAD FEEDS
 # ============================================
 
 with open('feeds.txt', 'r') as file:
@@ -74,9 +219,7 @@ for feed_url in feeds:
 
     feed_url = feed_url.strip()
 
-    print("\n================================")
-    print(f"Checking Feed: {feed_url}")
-    print("================================")
+    print(f"\nChecking Feed: {feed_url}")
 
     feed = feedparser.parse(feed_url)
 
@@ -87,7 +230,8 @@ for feed_url in feeds:
             title = entry.title
             link = entry.link
 
-            print(f"\nFound News: {title}")
+            print(f"\nFound: {title}")
+
 
             # ============================================
             # DUPLICATE CHECK
@@ -108,7 +252,7 @@ for feed_url in feeds:
 
 
             # ============================================
-            # GET SUMMARY
+            # SUMMARY
             # ============================================
 
             summary = ""
@@ -123,25 +267,16 @@ for feed_url in feeds:
 
             else:
 
-                summary = "Summary not available."
+                summary = "Summary unavailable."
 
-
-            # ============================================
-            # CLEAN HTML
-            # ============================================
 
             clean_summary = clean_html(summary)
 
-
-            # ============================================
-            # LIMIT SUMMARY SIZE
-            # ============================================
-
-            clean_summary = clean_summary[:1000]
+            clean_summary = clean_summary[:700]
 
 
             # ============================================
-            # TRANSLATE TITLE
+            # TRANSLATION
             # ============================================
 
             try:
@@ -151,16 +286,10 @@ for feed_url in feeds:
                     target='te'
                 ).translate(title)
 
-            except Exception as e:
-
-                print("Title Translation Error:", e)
+            except:
 
                 telugu_title = title
 
-
-            # ============================================
-            # TRANSLATE SUMMARY
-            # ============================================
 
             try:
 
@@ -169,19 +298,66 @@ for feed_url in feeds:
                     target='te'
                 ).translate(clean_summary)
 
-            except Exception as e:
-
-                print("Summary Translation Error:", e)
+            except:
 
                 telugu_summary = clean_summary
 
 
             # ============================================
-            # CREATE TELEGRAM MESSAGE
+            # CATEGORY
+            # ============================================
+
+            category = detect_category(title)
+
+
+            # ============================================
+            # HYPE
+            # ============================================
+
+            hype_risk = detect_hype(title)
+
+
+            # ============================================
+            # TRUST SCORE
+            # ============================================
+
+            trust_score = get_source_score(link)
+
+
+            # ============================================
+            # VERIFICATION
+            # ============================================
+
+            verification = get_verification(trust_score)
+
+
+            # ============================================
+            # PRIORITY
+            # ============================================
+
+            priority = ""
+
+            if trust_score >= 9:
+
+                priority = "🚨 అత్యవసర అంతర్జాతీయ AI వార్త"
+
+            else:
+
+                priority = "🌍 AI ప్రపంచ తాజా అప్డేట్"
+
+
+            # ============================================
+            # MESSAGE
             # ============================================
 
             message = f"""
-🚀 AI ప్రపంచ తాజా అప్డేట్
+{priority}
+
+🌍 సంస్థ / మూలం:
+{link.split('/')[2]}
+
+📂 విభాగం:
+{category}
 
 📰 వార్త:
 {telugu_title}
@@ -189,28 +365,32 @@ for feed_url in feeds:
 📖 సంక్షిప్త వివరణ:
 {telugu_summary}
 
+🛡 ధృవీకరణ స్థితి:
+{verification}
+
+⭐ మూల విశ్వసనీయత:
+{trust_score} / 10
+
+⚠ Hype Risk:
+{hype_risk}
+
 🔗 పూర్తి వార్త:
 {link}
 """
 
 
-            # ============================================
-            # DEBUG LOG
-            # ============================================
-
-            print("\nSending Telegram Message...")
             print(message)
 
 
             # ============================================
-            # SEND TO TELEGRAM
+            # SEND TELEGRAM
             # ============================================
 
             send_telegram(message)
 
 
             # ============================================
-            # SAVE TO DATABASE
+            # SAVE DATABASE
             # ============================================
 
             cursor.execute(
@@ -220,19 +400,12 @@ for feed_url in feeds:
 
             conn.commit()
 
-            print("Saved To Database")
+            print("Saved")
 
 
         except Exception as e:
 
-            print("\nERROR:")
-            print(e)
+            print("ERROR:", e)
 
 
-# ============================================
-# FINISHED
-# ============================================
-
-print("\n================================")
-print("ALL FEEDS COMPLETED")
-print("================================")
+print("\nALL FEEDS COMPLETED")
