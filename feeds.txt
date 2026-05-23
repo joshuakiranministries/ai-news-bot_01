@@ -7,3 +7,10 @@ https://www.reddit.com/r/OpenAI/.rss
 https://www.reddit.com/r/LocalLLaMA/.rss
 https://huggingface.co/blog/feed.xml
 https://www.marktechpost.com/feed/
+https://theaiblog.net/feed/
+https://www.ainewsletter.com/feed/
+https://analyticsindiamag.com/feed/
+https://www.machinelearningobserver.com/feed/
+https://www.paperswithcode.com/rss
+https://huggingface.co/posts/rss.xml
+https://www.technologyreview.com/feed/
