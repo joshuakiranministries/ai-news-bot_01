@@ -60,5 +60,5 @@ for feed_url in feeds:
             )
 
             conn.commit()
-
+print(message)
 print("Done")
