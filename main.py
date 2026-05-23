@@ -2,6 +2,7 @@ import feedparser
 import sqlite3
 import requests
 from datetime import datetime
+from deep_translator import GoogleTranslator
 
 BOT_TOKEN = "8796188861:AAGlWJFSSSG9mtUwPdzRan2aj5rHmmEBNR4"
 CHAT_ID = "483743563"
