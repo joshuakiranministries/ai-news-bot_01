@@ -351,7 +351,7 @@ for feed_url in feeds:
             # ============================================
 
             message = f"""
-{priority}
+🚨 అంతర్జాతీయ AI & టెక్ వార్త
 
 🌍 సంస్థ / మూలం:
 {link.split('/')[2]}
@@ -359,19 +359,24 @@ for feed_url in feeds:
 📂 విభాగం:
 {category}
 
-📰 వార్త:
+📰 ముఖ్య వార్త:
 {telugu_title}
 
-📖 సంక్షిప్త వివరణ:
+📖 పోస్ట్ సారాంశం:
 {telugu_summary}
 
-🛡 ధృవీకరణ స్థితి:
+🧠 ఎందుకు ముఖ్యమంటే:
+• ఈ వార్త global AI industry పై ప్రభావం చూపే అవకాశం ఉంది
+• developers మరియు tech companies కి ఉపయోగకరంగా మారవచ్చు
+• AI competition మరింత వేగవంతం కావచ్చు
+
+🛡 ఫ్యాక్ట్ చెక్ స్థితి:
 {verification}
 
-⭐ మూల విశ్వసనీయత:
+⭐️ మూల విశ్వసనీయత:
 {trust_score} / 10
 
-⚠ Hype Risk:
+⚠️ Hype Risk:
 {hype_risk}
 
 🔗 పూర్తి వార్త:
