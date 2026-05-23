@@ -1,0 +1,4 @@
+https://techcrunch.com/tag/artificial-intelligence/feed/
+https://www.theverge.com/rss/ai-artificial-intelligence/index.xml
+https://feeds.feedburner.com/oreilly/radar
+https://www.reddit.com/r/MachineLearning/.rss
