@@ -2,3 +2,8 @@ https://techcrunch.com/tag/artificial-intelligence/feed/
 https://www.theverge.com/rss/ai-artificial-intelligence/index.xml
 https://feeds.feedburner.com/oreilly/radar
 https://www.reddit.com/r/MachineLearning/.rss
+https://feeds.feedburner.com/TechCrunch/artificial-intelligence
+https://www.reddit.com/r/OpenAI/.rss
+https://www.reddit.com/r/LocalLLaMA/.rss
+https://huggingface.co/blog/feed.xml
+https://www.marktechpost.com/feed/
