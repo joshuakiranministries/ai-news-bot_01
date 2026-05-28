@@ -2,13 +2,16 @@ name: AI News Bot
 
 on:
   schedule:
-    - cron: '13 */6 * * *'
+    - cron: '30 2 * * *'
+    - cron: '30 6 * * *'
+    - cron: '30 12 * * *'
+    - cron: '30 16 * * *'
   workflow_dispatch:
 
 jobs:
   run-bot:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
       - name: Checkout Repository
